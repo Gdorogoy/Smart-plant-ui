@@ -6,7 +6,7 @@ const colors = {
   primary: '#3d5a00',         // Dark olive green
   secondary: '#27272a',       // Dark gray
   muted: '#3f3f46',          // Medium gray
-  accent: '#52525b',         // Light gray
+  accent: '#5b5252',         // Light gray
   
   // Destructive
   destructive: '#ff6b6b',    // Coral/salmon red
