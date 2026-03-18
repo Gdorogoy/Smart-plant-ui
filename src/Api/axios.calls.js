@@ -3,7 +3,7 @@ import axios from "axios";
 const REFRESH_URL = "http://localhost:3002/auth/refresh";
 
 
-export const axiosSendRequest = async (method, url, data, token, refreshToken) => {
+export const axiosSendRequest = async (method, url, data, token) => {
     try {
         const res = await axios({
             method,
@@ -11,7 +11,8 @@ export const axiosSendRequest = async (method, url, data, token, refreshToken) =
             data,
             headers: {
                 Authorization: token
-            }
+            },
+            withCredentials: true
         });
 
         return res.data;
@@ -20,7 +21,7 @@ export const axiosSendRequest = async (method, url, data, token, refreshToken) =
         if (error.status === 401) {
             try {
 
-                const newToken = await refreshToken(refreshToken);
+                const newToken = await refreshToken();
 
                 const retry = await axios({
                     method,
@@ -28,16 +29,16 @@ export const axiosSendRequest = async (method, url, data, token, refreshToken) =
                     data,
                     headers: {
                         Authorization: newToken
-                    }
+                    },
+                    withCredentials: true
                 });
                 return retry.data;
 
-            } catch (error) {
-                return error;
+            } catch {
+                window.location.href = '/login';
             }
-        } else {
-            return error;
         }
+        throw error;
     }
 }
 
@@ -52,6 +53,6 @@ const refreshToken = async (refreshToken) => {
         });
         return res.data;
     } catch (error) {
-        return error;
+        throw error
     }
 }

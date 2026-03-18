@@ -1,18 +1,18 @@
 import { Box, Typography } from '@mui/material'
 import colors from '../../assets/Colors'
 import dayjs from 'dayjs'
-import DayComponent from './DayComponent'
-import { DaysOfWeeks } from './DaysDisplay'
-import { getUserStatistics } from '../Api/Sessions.api'
 import { useState } from 'react'
 import { useEffect } from 'react'
+import DayComponent from './Calendar/DayComponent'
+import { DaysOfWeeks } from './Calendar/DaysDisplay'
+import { getUserStatistics } from '../../Api/statistics.api'
 
 export default function MonthlyActivity() {
   const [monthlyActivity, setMonthlyActivity] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await getUserStatistics('0ecf972b-16be-4d0a-8312-b36609283816', 'none', 'none');
+      const res = await getUserStatistics('0ecf972b-16be-4d0a-8312-b36609283816', 'none');
       setMonthlyActivity(res.monthlyActivity);
     }
     fetchData();
@@ -121,23 +121,3 @@ export default function MonthlyActivity() {
     </Box>
   )
 }
-
-
-/*
-
-        {days.map((day, index) => (
-          <DayComponent
-            day={day}
-            index={index}
-            getDayColor={getDayColor}
-            getTextColor={getTextColor}
-            activeDays={activeDays}
-
-          />
-        ))}
-*/
-
-// {/* Empty offset cells */}
-//         {Array.from({ length: offset }).map((_, i) => (
-//           <Box key={`empty-${i}`} sx={{ width: 50, height: 50 }} />
-//         ))}

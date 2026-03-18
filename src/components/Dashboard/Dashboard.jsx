@@ -1,10 +1,8 @@
-// src/components/Dashboard.jsx
 import { Box } from '@mui/material'
-import colors from '../assets/Colors'
-import WeeklyStats from './WeeklyStats'
-import MonthlyActivity from './Calendar/MonthlyActivity'
-import QuickStats from './QuickStat/QuickStats'
-import Plant from './QuickStat/Plant'
+import QuickStats from './QucikStats/QuickStats'
+import Plant from './QucikStats/Plant'
+import MonthlyActivity from './MonthlyActivity'
+import WeeklyStats from './WeeklyStatistics'
 
 export default function Dashboard() {
   return (
@@ -39,7 +37,7 @@ export default function Dashboard() {
         minHeight: 0,
         overflow: 'hidden'
       }}>
-        <WeeklyStats />
+        <WeeklyStats></WeeklyStats>
       </Box>
 
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Card, Box, Typography, LinearProgress, Stack } from '@mui/material';
-import colors from '../../assets/Colors';
+import colors from '../../../assets/Colors';
 
 const Plant = ({ name, imageUrl, }) => {
     const plant = {

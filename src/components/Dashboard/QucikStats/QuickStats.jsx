@@ -1,10 +1,9 @@
-// src/components/QuickStats.jsx
 import { Box, LinearProgress, Stack, Typography } from '@mui/material'
-import colors from '../../assets/Colors'
+import colors from '../../../assets/Colors'
 import { LineChart } from '@mui/x-charts'
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { getUserStatistics } from '../Api/Sessions.api';
+import { getUserStatistics } from '../../../Api/statistics.api';
 
 export default function QuickStats() {
 

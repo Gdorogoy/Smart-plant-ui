@@ -1,5 +1,5 @@
 import React from 'react'
-import colors from '../../assets/Colors'
+import colors from '../../../assets/Colors'
 import { Box, Typography } from '@mui/material'
 
 const DayComponent = ({ day, index, getDayColor, getTextColor, activeDays, empty }) => {

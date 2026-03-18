@@ -1,10 +1,10 @@
 // src/components/WeeklyChart.jsx
 import { Box } from '@mui/material'
-import colors from '../assets/Colors'
+import colors from '../../assets/Colors'
 import { LineChart } from '@mui/x-charts/LineChart'
 import { useState } from 'react'
 import { useEffect } from 'react';
-import { getUserStatistics } from './Api/Sessions.api';
+import { getUserStatistics } from '../../Api/statistics.api';
 
 export default function WeeklyStats() {
   const [weeklyData, setWeeklyData] = useState(null);
@@ -12,7 +12,7 @@ export default function WeeklyStats() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await getUserStatistics('0ecf972b-16be-4d0a-8312-b36609283816', 'none', 'none');
+      const res = await getUserStatistics('0ecf972b-16be-4d0a-8312-b36609283816', 'none');
 
       const stats = res.weeklyDailyStatsPerPlant;
       setWeeklyData(stats);

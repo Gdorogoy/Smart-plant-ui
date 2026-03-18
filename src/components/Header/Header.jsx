@@ -2,7 +2,7 @@
 import { Box, IconButton, Button } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
-import colors from '../assets/Colors'
+import colors from '../../assets/Colors'
 
 export default function Header() {
   const userName = "Alex" // Get from user context
@@ -15,8 +15,8 @@ export default function Header() {
   }
 
   return (
-    <Box sx={{ 
-      display: 'flex', 
+    <Box sx={{
+      display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
       p: 2,
@@ -38,17 +38,17 @@ export default function Header() {
         >
           <MenuIcon sx={{ fontSize: 28 }} />
         </IconButton>
-        
+
         <Box>
-          <Box sx={{ 
-            color: colors.foreground, 
+          <Box sx={{
+            color: colors.foreground,
             fontSize: '1.5rem',
             fontWeight: 'bold'
           }}>
             Welcome back, {userName}!
           </Box>
-          <Box sx={{ 
-            color: colors.muted, 
+          <Box sx={{
+            color: colors.muted,
             fontSize: '0.9rem'
           }}>
             Today: {todayProgress}m / {todayGoal}m
