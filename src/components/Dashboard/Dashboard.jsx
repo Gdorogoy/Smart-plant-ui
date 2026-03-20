@@ -9,7 +9,8 @@ import { PlantContext } from '../../Context/PlantContext'
 
 export default function Dashboard() {
 
-  const { statistics, setLoading, loading, refetchData, userProfile } = useContext(PlantContext);
+  const { statistics, setLoading, loading, refetchData, userProfile, plants } = useContext(PlantContext);
+
 
   return (
     <Box sx={{
@@ -30,7 +31,7 @@ export default function Dashboard() {
         minHeight: 0,
         pr: 4
       }}>
-        <Plant />
+        <Plant plants={plants} setLoading={setLoading} loading={loading} userProfile={userProfile} lastActivePlantId={userProfile?.lastActivePlantId} />
         <QuickStats statistics={statistics} setLoading={setLoading} loading={loading} userProfile={userProfile} />
         <MonthlyActivity statistics={statistics} setLoading={setLoading} loading={loading} />
 

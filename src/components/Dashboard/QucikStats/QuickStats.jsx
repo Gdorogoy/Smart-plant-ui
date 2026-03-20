@@ -75,7 +75,7 @@ export default function QuickStats({ statistics, loading, setLoading, userProfil
   };
 
 
-  const progressPercent = (dailyProggress / 65) * 100
+  const progressPercent = (convertToMin(dailyProggress) / convertToMin(dailyGoal)) * 100
 
   return (
     <Box sx={{
@@ -116,6 +116,8 @@ export default function QuickStats({ statistics, loading, setLoading, userProfil
         <LinearProgress
           variant="determinate"
           value={progressPercent}
+          height={150}
+          margin={{ top: 5, right: 5, bottom: 20, left: 25 }}
           sx={{
             height: 8,
             borderRadius: 3,
@@ -155,48 +157,49 @@ export default function QuickStats({ statistics, loading, setLoading, userProfil
           minHeight: 0,
           mt: 1
         }}>
-          {(weeklyData && weekDates.length > 0) && <LineChart
-            xAxis={
-              [{
-                data: weekDates,
-                scaleType: 'point',
+          {
+            (weeklyData && weekDates.length > 0) && <LineChart
+              xAxis={
+                [{
+                  data: weekDates,
+                  scaleType: 'point',
+                  tickLabelStyle: {
+                    fill: colors.foreground,
+                    fontSize: 9,
+                    fontWeight: 'bold'
+                  }
+                }]
+              }
+              series={[
+                {
+                  data: Object.values(map),
+                  showMark: true,
+                  area: true,
+                  connectNulls: true,
+                  valueFormatter: formatTooltip,
+                  id: 'Total',
+                  color: colors.chart2
+
+                }
+              ]}
+              yAxis={[{
+                valueFormatter: formatYAxis,
+                ticNumber: 4,
                 tickLabelStyle: {
                   fill: colors.foreground,
-                  fontSize: 9,
-                  fontWeight: 'bold'
+                  fontSize: 12
                 }
-              }]
-            }
-            series={[
-              {
-                data: Object.values(map),
-                showMark: true,
-                area: true,
-                connectNulls: true,
-                valueFormatter: formatTooltip,
-                id: 'Total',
-                color: colors.chart2
-
-              }
-            ]}
-            yAxis={[{
-              valueFormatter: formatYAxis,
-              ticNumber: 4,
-              tickLabelStyle: {
-                fill: colors.foreground,
-                fontSize: 12
-              }
-            }]}
-            margin={{ top: 10, right: 10, bottom: 20, left: 30 }}
-            sx={{
-              bgcolor: colors.muted,
-              borderRadius: 5,
-              pr: 8,
-              '& .MuiChartsAxis-line': { stroke: colors.accent },
-              '& .MuiChartsAxis-tick': { stroke: colors.accent },
-              '& .MuiChartsAxis-tickLabel': { fill: colors.foreground },
-            }}
-          />}
+              }]}
+              margin={{ top: 10, right: 10, bottom: 20, left: 30 }}
+              sx={{
+                bgcolor: colors.muted,
+                borderRadius: 5,
+                // pr: 8,
+                '& .MuiChartsAxis-line': { stroke: colors.accent },
+                '& .MuiChartsAxis-tick': { stroke: colors.accent },
+                '& .MuiChartsAxis-tickLabel': { fill: colors.foreground },
+              }}
+            />}
         </Box>
       </Box>
 

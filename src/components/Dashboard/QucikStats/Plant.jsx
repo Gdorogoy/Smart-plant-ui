@@ -1,16 +1,28 @@
 import React from 'react';
 import { Card, Box, Typography, LinearProgress, Stack } from '@mui/material';
 import colors from '../../../assets/Colors';
+import { useEffect } from 'react';
+import { useState } from 'react';
 
-const Plant = ({ name, imageUrl, }) => {
-    const plant = {
-        name: 'Rose 🌹',
-        level: 12,
-        xp: 2450,
-        nextLevelXp: 3000
-    }
-    const proggress = (plant.xp / plant.nextLevelXp) * 100
+const Plant = ({ plants, setLoading, loading, userProfile, lastActivePlantId }) => {
 
+    const [userPlants, setUserPlant] = useState([]);
+    const [lastActivePlant, setLastActviePlant] = useState(null);
+
+    useEffect(() => {
+        if (!plants.length || !userProfile) return;
+
+        const found = plants.find(p => p.id === lastActivePlantId);
+
+        setUserPlant(plants);
+        setLastActviePlant(found || plants[0]);
+
+    }, [plants, userProfile, lastActivePlantId]);
+
+
+    const proggress = lastActivePlant ? (lastActivePlant.currentXp / lastActivePlant.nextLevelXp) * 100 : 1
+
+    if (!lastActivePlant) return null;
     return (
         <Box
             sx={{
@@ -35,8 +47,8 @@ const Plant = ({ name, imageUrl, }) => {
             }}>
                 <Box
                     component="img"
-                    src={imageUrl || 'https://images.unsplash.com/photo-1453904300235-0f2f60b15b5d?auto=format&fit=crop&q=80'} // Default fallback plant image
-                    alt={name}
+                    src={lastActivePlant?.image || 'missing image'} // Default fallback plant image
+                    alt={lastActivePlant?.title || 'unkown plant'}
                     sx={{
                         p: 2,
                         borderRadius: 5,
@@ -64,7 +76,7 @@ const Plant = ({ name, imageUrl, }) => {
                         lineHeight: 1.2,
                     }}
                 >
-                    {name || 'Unknown Plant'}
+                    {lastActivePlant.title || 'Unknown Plant'}
                 </Typography>
 
                 {/* Progress Bar Area */}
@@ -111,7 +123,7 @@ const Plant = ({ name, imageUrl, }) => {
                             fontWeight: 600,
                         }}
                     >
-                        {plant.xp} / {plant.nextLevelXp}
+                        {lastActivePlant?.currentXp} / {lastActivePlant?.nextLevelXp}
                     </Typography>
                 </Box>
             </Box>

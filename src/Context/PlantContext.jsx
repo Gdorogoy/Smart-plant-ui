@@ -73,7 +73,6 @@ const PlantContextProvider = ({ children }) => {
         fetchData();
     }, [auth, refreshStats]);
 
-
     return (
         <PlantContext.Provider value={{
             userProfile, auth, plants, statistics, loading, setLoading,
