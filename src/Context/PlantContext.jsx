@@ -6,6 +6,7 @@ import { getDashboardInfo } from '../Api/dashboard.api';
 
 export const PlantContext = createContext();
 
+
 const PlantContextProvider = ({ children }) => {
 
     const [refreshStats, setRefreshStats] = useState(0);
@@ -13,21 +14,23 @@ const PlantContextProvider = ({ children }) => {
     const [userProfile, setUserProfile] = useState(null);
     const [auth, setAuth] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [plants, setPlants] = useState(null);
+    const [plants, setPlants] = useState([]);
     const [statistics, setStatistics] = useState(null);
 
 
     const refetchData = () => setRefreshStats(prev => prev + 1);
 
-    const setAuthInfo = (token, authId) => {
-        setAuth({
-            authId: authId,
-            token: token
-        });
+    const setAuthInfo = (token, userProfile) => {
+        const authObj = { token };
+        setAuth(authObj);
+        setUserProfile(userProfile);
+        localStorage.setItem('auth', JSON.stringify(authObj));
+        localStorage.setItem('userProfile', JSON.stringify(userProfile));
     }
 
     const setUserInfo = (userProfile) => {
         setUserProfile(userProfile);
+        localStorage.setItem('userProfile', JSON.stringify(userProfile));
     }
 
     const logout = () => {
@@ -36,7 +39,21 @@ const PlantContextProvider = ({ children }) => {
         setLoading(false);
         setPlants(null);
         setStatistics(null);
+        localStorage.removeItem('auth');
+        localStorage.removeItem('userProfile');
     }
+
+    useEffect(() => {
+        const savedAuth = localStorage.getItem('auth');
+        const savedProfile = localStorage.getItem('userProfile');
+        if (savedAuth && savedProfile) {
+            setAuth(JSON.parse(savedAuth));
+            setUserProfile(JSON.parse(savedProfile));
+            console.log(savedProfile)
+        } else {
+            setLoading(false);
+        }
+    }, []);
 
 
     useEffect(() => {
@@ -45,26 +62,21 @@ const PlantContextProvider = ({ children }) => {
             try {
                 setLoading(true);
                 const dashboardRes = await getDashboardInfo(userProfile.id, auth.token);
-                setPlants(dashboardRes.data.plants);
-                setStatistics(dashboardRes.data.statistics);
+                setPlants(dashboardRes.plants);
+                setStatistics(dashboardRes.statistic);
                 setLoading(false);
-            } catch {
+            } catch (error) {
                 setLoading(false);
-                window.location.href = '/login';
+                console.log("error !!! ", error);
             }
         }
         fetchData();
     }, [auth, refreshStats]);
 
-    useEffect(() => {
-        if (!auth) return;
-        fetch();
-    }, [auth, refreshStats]);
-
 
     return (
         <PlantContext.Provider value={{
-            userProfile, auth, plants, statistics, loading,
+            userProfile, auth, plants, statistics, loading, setLoading,
             setAuthInfo, setUserInfo, refetchData, logout
         }}>
             {children}

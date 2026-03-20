@@ -4,32 +4,33 @@ import colors from '../../assets/Colors'
 import { LineChart } from '@mui/x-charts/LineChart'
 import { useState } from 'react'
 import { useEffect } from 'react';
-import { getUserStatistics } from '../../Api/statistics.api';
+import { PlantContext } from '../../Context/PlantContext'
+import { useContext } from 'react'
 
-export default function WeeklyStats() {
+export default function WeeklyStats({ statistics, setLoading, loading }) {
   const [weeklyData, setWeeklyData] = useState(null);
   const [map, setMap] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await getUserStatistics('0ecf972b-16be-4d0a-8312-b36609283816', 'none');
-
-      const stats = res.weeklyDailyStatsPerPlant;
-      setWeeklyData(stats);
+      if (!statistics) return;
+      const { weeklyDailyStatsPerPlant } = statistics
+      setLoading(true);
+      setWeeklyData(weeklyDailyStatsPerPlant);
 
       const newMap = {};
-      stats.forEach((item) => {
+      weeklyDailyStatsPerPlant.forEach((item) => {
         let dayMinutes = Object.values(item.activeDays);
         let normalized = dayMinutes.map((min) => min / 60);
         newMap[item.plant] = normalized
       });
 
       setMap(newMap);
+      setLoading(false);
     }
     fetchData();
 
-
-  }, []);
+  }, [statistics]);
 
 
 

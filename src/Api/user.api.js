@@ -1,5 +1,5 @@
 
-const USER_URL = "http://localhost:3001/user/"
+const USER_URL = "http://localhost:3001/user"
 
 export const getUserInfo = async (userId, token) => {
     const response = await axiosSendRequest(

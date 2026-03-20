@@ -1,6 +1,6 @@
 import { axiosSendRequest } from "./axios.calls";
 
-const PLANT_URL = "http://localhost:3005/plant/"
+const PLANT_URL = "http://localhost:3005/plant"
 
 export const getAllPlants = async (userId, token) => {
     const response = await axiosSendRequest(

@@ -1,6 +1,6 @@
 import { axiosSendRequest } from "./axios.calls";
 
-const AUTH_URL = "http://localhost:3002/auth/"
+const AUTH_URL = "http://localhost:3002/auth"
 
 
 export const login = async (data) => {

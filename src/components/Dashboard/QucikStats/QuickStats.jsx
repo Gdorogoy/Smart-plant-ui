@@ -3,48 +3,50 @@ import colors from '../../../assets/Colors'
 import { LineChart } from '@mui/x-charts'
 import { useState } from 'react';
 import { useEffect } from 'react';
-import { getUserStatistics } from '../../../Api/statistics.api';
 
-export default function QuickStats() {
+export default function QuickStats({ statistics, loading, setLoading, userProfile }) {
 
+  const convertToMin = (time) => {
+    return time / 1000 / 60;
+  }
 
-  const [weeklyData, setWeeklyData] = useState(null);
+  const [dailyProggress, setDailyProggress] = useState(0);
+
   const [map, setMap] = useState({});
+  const [weeklyData, setWeeklyData] = useState(null);
   const [weekDates, setWeekDates] = useState([]);
+  const [totalWeekActivity, setTotalWeekActivity] = useState(0);
+  const [dailyGoal, setDailyGoal] = useState(0);
 
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await getUserStatistics('0ecf972b-16be-4d0a-8312-b36609283816', 'none', 'none');
 
-      const stats = res.dailyWeeklyActivity;
-      setWeeklyData(stats);
+      if (!statistics || !userProfile) return;
+
+      setLoading(true);
+      const { dailyWeeklyActivity } = statistics;
+      const { todayActivity } = statistics;
+      const { goal } = userProfile
+
+      setDailyProggress(todayActivity);
+      setWeeklyData(dailyWeeklyActivity);
+      setDailyGoal(convertToMin(goal));
 
       const newMap = {};
-      Object.entries(stats).map(([key, value]) => {
+      Object.entries(dailyWeeklyActivity).map(([key, value]) => {
         newMap[key] = value / 60;
+        setTotalWeekActivity(prev => prev + (value / 60));
       })
 
       setMap(newMap);
       weekLables();
+      setLoading(false);
     }
     fetchData();
 
 
-  }, []);
-
-  const stats = {
-    today: 45,
-    todayGoal: 60,
-    week: 330,
-    streak: 7,
-    activePlant: {
-      name: 'Rose 🌹',
-      level: 12,
-      xp: 2450,
-      nextLevelXp: 3000
-    }
-  }
+  }, [statistics, userProfile]);
 
   const formatTooltip = (minutes) => {
     const h = minutes / 60;
@@ -73,15 +75,7 @@ export default function QuickStats() {
   };
 
 
-
-
-  const formatTime = (minutes) => {
-    const h = Math.floor(minutes / 60)
-    const m = minutes % 60
-    return h > 0 ? `${h}h ${m}m` : `${m}m`
-  }
-
-  const progressPercent = (stats.today / stats.todayGoal) * 100
+  const progressPercent = (dailyProggress / 65) * 100
 
   return (
     <Box sx={{
@@ -94,7 +88,6 @@ export default function QuickStats() {
       height: '100%'
     }}>
       {/* Today's Progress */}
-
 
       <Box>
         <Box sx={{
@@ -110,10 +103,10 @@ export default function QuickStats() {
             fontSize: '1.2rem',
             fontWeight: 'bold'
           }}>
-            {formatTime(stats.today)}
+            {formatTooltip(dailyProggress)}
           </Typography>
           <Typography>
-            / {formatTime(stats.todayGoal)}
+            / {formatTooltip(dailyGoal)}
           </Typography>
 
 
@@ -154,7 +147,7 @@ export default function QuickStats() {
           fontSize: '1.2rem',
           fontWeight: 'bold'
         }}>
-          {formatTime(stats.week)}
+          {formatTooltip(totalWeekActivity)}
         </Box>
         <Box sx={{
           flex: 1,

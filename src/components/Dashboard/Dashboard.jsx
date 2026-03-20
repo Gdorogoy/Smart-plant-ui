@@ -3,8 +3,14 @@ import QuickStats from './QucikStats/QuickStats'
 import Plant from './QucikStats/Plant'
 import MonthlyActivity from './MonthlyActivity'
 import WeeklyStats from './WeeklyStatistics'
+import { useContext } from 'react'
+import { PlantContext } from '../../Context/PlantContext'
+
 
 export default function Dashboard() {
+
+  const { statistics, setLoading, loading, refetchData, userProfile } = useContext(PlantContext);
+
   return (
     <Box sx={{
       height: '100vh',
@@ -25,8 +31,8 @@ export default function Dashboard() {
         pr: 4
       }}>
         <Plant />
-        <QuickStats />
-        <MonthlyActivity />
+        <QuickStats statistics={statistics} setLoading={setLoading} loading={loading} userProfile={userProfile} />
+        <MonthlyActivity statistics={statistics} setLoading={setLoading} loading={loading} />
 
 
 
@@ -37,7 +43,7 @@ export default function Dashboard() {
         minHeight: 0,
         overflow: 'hidden'
       }}>
-        <WeeklyStats></WeeklyStats>
+        <WeeklyStats statistics={statistics} setLoading={setLoading} loading={loading}></WeeklyStats>
       </Box>
 
 

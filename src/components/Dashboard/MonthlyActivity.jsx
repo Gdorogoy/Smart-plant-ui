@@ -5,24 +5,28 @@ import { useState } from 'react'
 import { useEffect } from 'react'
 import DayComponent from './Calendar/DayComponent'
 import { DaysOfWeeks } from './Calendar/DaysDisplay'
-import { getUserStatistics } from '../../Api/statistics.api'
 
-export default function MonthlyActivity() {
-  const [monthlyActivity, setMonthlyActivity] = useState([]);
+export default function MonthlyActivity({ statistics, setLoading, loading }) {
+  const [monthStats, setMonthStats] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await getUserStatistics('0ecf972b-16be-4d0a-8312-b36609283816', 'none');
-      setMonthlyActivity(res.monthlyActivity);
+      if (!statistics) return;
+      setLoading(true);
+
+      const { monthlyActivity } = statistics
+      setMonthStats(monthlyActivity);
+
+      setLoading(false);
     }
     fetchData();
 
-  }, []);
+  }, [statistics]);
 
 
   const getLast31Days = () => {
     const days = []
-    for (let i = 31; i >= 0; i--) {
+    for (let i = 30; i >= 0; i--) {
       days.push(dayjs().subtract(i, 'day'))
     }
     return days
@@ -31,7 +35,7 @@ export default function MonthlyActivity() {
 
 
   const activeDays = new Set(
-    monthlyActivity
+    monthStats
       .filter((date) => (date.active === true))
       .map(date => date.date)
   );
