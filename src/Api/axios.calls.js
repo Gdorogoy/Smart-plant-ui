@@ -10,7 +10,7 @@ export const axiosSendRequest = async (method, url, data, token) => {
             url,
             data,
             headers: {
-                Authorization: token
+                Authorization: `Bearer ${token}`
             },
             withCredentials: true
         });
@@ -42,14 +42,12 @@ export const axiosSendRequest = async (method, url, data, token) => {
     }
 }
 
-const refreshToken = async (refreshToken) => {
+const refreshToken = async () => {
     try {
         const res = await axios({
             method: "POST",
             url: REFRESH_URL,
-            headers: {
-                Authorization: refreshToken
-            }
+            withCredentials: true
         });
         return res.data;
     } catch (error) {

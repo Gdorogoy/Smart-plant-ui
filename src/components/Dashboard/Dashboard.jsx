@@ -14,8 +14,8 @@ export default function Dashboard() {
 
   return (
     <Box sx={{
-      height: '100vh',
-      width: '100vw',
+      height: '100%',
+      width: '100%',
       display: 'grid',
       gridTemplateRows: '50% 50%',
       gap: 2,

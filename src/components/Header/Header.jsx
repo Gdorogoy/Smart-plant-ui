@@ -3,8 +3,13 @@ import { Box, IconButton, Button } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu'
 import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import colors from '../../assets/Colors'
+import { useState } from 'react';
+import Sidebar from '../SideBar/Sidebar';
 
 export default function Header() {
+
+  const [openSidebar, setOpenSidebar] = useState(false);
+
   const userName = "Alex" // Get from user context
   const todayProgress = 45 // minutes
   const todayGoal = 60
@@ -24,7 +29,7 @@ export default function Header() {
     }}>
       {/* Left: Menu + Greeting */}
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-        <IconButton
+        <IconButton onClick={() => setOpenSidebar(prev => !prev)}
           disableRipple
           sx={{
             bgcolor: colors.accent,
@@ -78,6 +83,8 @@ export default function Header() {
       >
         Start Session
       </Button>
+
+      <Sidebar open={openSidebar} setOpen={setOpenSidebar} />
     </Box>
   )
 }

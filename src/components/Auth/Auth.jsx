@@ -6,8 +6,10 @@ import { PlantContext } from '../../Context/PlantContext';
 import { login } from '../../Api/auth.api';
 import { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const Auth = () => {
+
     const navigate = useNavigate()
 
     const { setAuthInfo, loading, setLoading } = useContext(PlantContext);
@@ -20,6 +22,14 @@ const Auth = () => {
         confirmPassword: '',
         name: '',
     });
+
+
+    useEffect(() => {
+        if (localStorage.getItem("userProfile") != null) {
+            navigate("/home");
+        }
+    }, []);
+
 
     const handleTabChange = (event, newValue) => {
         setTabValue(newValue);
