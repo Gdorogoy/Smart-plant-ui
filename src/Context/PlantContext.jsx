@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 import { createContext } from 'react';
 import { getDashboardInfo } from '../Api/dashboard.api';
+import { refreshToken } from '../Api/axios.calls';
 
 
 export const PlantContext = createContext();
@@ -49,7 +50,6 @@ const PlantContextProvider = ({ children }) => {
         if (savedAuth && savedProfile) {
             setAuth(JSON.parse(savedAuth));
             setUserProfile(JSON.parse(savedProfile));
-            console.log(savedProfile)
         } else {
             setLoading(false);
         }
@@ -66,6 +66,10 @@ const PlantContextProvider = ({ children }) => {
                 setStatistics(dashboardRes.statistic);
                 setLoading(false);
             } catch (error) {
+                if (error.response.status === 401) {
+                    const refresh = await refreshToken();
+                    setAuthInfo(refresh.accessToken, userProfile);
+                }
                 setLoading(false);
                 console.log("error !!! ", error);
             }

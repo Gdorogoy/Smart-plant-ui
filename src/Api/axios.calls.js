@@ -42,7 +42,7 @@ export const axiosSendRequest = async (method, url, data, token) => {
     }
 }
 
-const refreshToken = async () => {
+export const refreshToken = async () => {
     try {
         const res = await axios({
             method: "POST",

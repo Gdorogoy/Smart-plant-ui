@@ -17,12 +17,16 @@ import SettingsIcon from '@mui/icons-material/Settings'
 import LogoutIcon from '@mui/icons-material/Logout'
 import { useNavigate, useLocation } from 'react-router-dom'
 import colors from '../../assets/Colors'
+import { useContext } from 'react'
+import { PlantContext } from '../../Context/PlantContext'
 
 const drawerWidth = 260
 
 const Sidebar = ({ open, setOpen }) => {
     const navigate = useNavigate()
     const location = useLocation()
+
+    const { logout } = useContext(PlantContext)
 
     const menuItems = [
         { text: 'Dashboard', icon: <DashboardIcon />, path: '/home' },
@@ -104,7 +108,7 @@ const Sidebar = ({ open, setOpen }) => {
                                     </ListItemIcon>
                                     <ListItemText
                                         primary={item.text}
-                                        primaryTypographyProps={{
+                                        slotProps={{
                                             fontWeight: isActive ? 'bold' : 'medium',
                                             fontSize: '0.95rem'
                                         }}
@@ -122,7 +126,7 @@ const Sidebar = ({ open, setOpen }) => {
                 <ListItem disablePadding>
                     <ListItemButton
                         onClick={() => {
-                            navigate('/login');
+                            logout();
                             setOpen(false);
                         }}
                         sx={{

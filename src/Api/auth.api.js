@@ -25,17 +25,17 @@ export const register = async (data) => {
     return response;
 }
 
-
-export const refresh = async (refreshToken) => {
-    const response = await axiosSendRequest(
-        "POST",
-        `${AUTH_URL}/refresh`,
-        null,
-        null,
-        refreshToken
-    );
-    return response;
-}
+// ! DEPRACTED
+// export const refresh = async (refreshToken) => {
+//     const response = await axiosSendRequest(
+//         "POST",
+//         `${AUTH_URL}/refresh`,
+//         null,
+//         null,
+//         refreshToken
+//     );
+//     return response;
+// }
 
 export const logout = async (data) => {
     const response = await axiosSendRequest(

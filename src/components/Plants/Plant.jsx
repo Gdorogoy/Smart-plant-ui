@@ -1,28 +1,36 @@
 import React from 'react';
-import { Card, Box, Typography, LinearProgress, Stack } from '@mui/material';
-import colors from '../../../assets/Colors';
+import { Box, Typography, LinearProgress, Stack } from '@mui/material';
 import { useEffect } from 'react';
 import { useState } from 'react';
+import colors from '../../assets/Colors';
 
-const Plant = ({ plants, setLoading, loading, userProfile, lastActivePlantId }) => {
+const Plant = ({ plants, setLoading, loading, userProfile, lastActivePlantId, singlePlant }) => {
 
     const [userPlants, setUserPlant] = useState([]);
-    const [lastActivePlant, setLastActviePlant] = useState(null);
+    const [plant, setPlant] = useState(null);
 
     useEffect(() => {
-        if (!plants.length || !userProfile) return;
+        if (singlePlant) {
+            setPlant(singlePlant);
+            return;
+        }
+
+        if (!plants?.length || !userProfile) return;
+        setLoading(true);
 
         const found = plants.find(p => p.id === lastActivePlantId);
 
         setUserPlant(plants);
-        setLastActviePlant(found || plants[0]);
+        setPlant(found || plants[0]);
+
+        setLoading(false);
 
     }, [plants, userProfile, lastActivePlantId]);
 
+    console.log(plant)
+    const proggress = plant ? (plant.currentXp / plant.nextLevelXp) * 100 : 1
 
-    const proggress = lastActivePlant ? (lastActivePlant.currentXp / lastActivePlant.nextLevelXp) * 100 : 1
-
-    if (!lastActivePlant) return null;
+    if (!plant) return null;
     return (
         <Box
             sx={{
@@ -47,8 +55,8 @@ const Plant = ({ plants, setLoading, loading, userProfile, lastActivePlantId }) 
             }}>
                 <Box
                     component="img"
-                    src={lastActivePlant?.image || 'missing image'} // Default fallback plant image
-                    alt={lastActivePlant?.title || 'unkown plant'}
+                    src={plant?.image || 'missing image'} // Default fallback plant image
+                    alt={plant?.title || 'unkown plant'}
                     sx={{
                         p: 2,
                         borderRadius: 5,
@@ -76,7 +84,7 @@ const Plant = ({ plants, setLoading, loading, userProfile, lastActivePlantId }) 
                         lineHeight: 1.2,
                     }}
                 >
-                    {lastActivePlant.title || 'Unknown Plant'}
+                    {plant.title || 'Unknown Plant'}
                 </Typography>
 
                 {/* Progress Bar Area */}
@@ -123,7 +131,7 @@ const Plant = ({ plants, setLoading, loading, userProfile, lastActivePlantId }) 
                             fontWeight: 600,
                         }}
                     >
-                        {lastActivePlant?.currentXp} / {lastActivePlant?.nextLevelXp}
+                        {plant?.currentXp} / {plant?.nextLevelXp}
                     </Typography>
                 </Box>
             </Box>

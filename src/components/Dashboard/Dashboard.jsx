@@ -1,16 +1,23 @@
 import { Box } from '@mui/material'
 import QuickStats from './QucikStats/QuickStats'
-import Plant from './QucikStats/Plant'
 import MonthlyActivity from './MonthlyActivity'
 import WeeklyStats from './WeeklyStatistics'
 import { useContext } from 'react'
 import { PlantContext } from '../../Context/PlantContext'
+import Plant from '../Plants/Plant'
+import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 
 export default function Dashboard() {
 
   const { statistics, setLoading, loading, refetchData, userProfile, plants } = useContext(PlantContext);
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!userProfile) navigate('/login');
+
+  }, [userProfile])
 
   return (
     <Box sx={{
