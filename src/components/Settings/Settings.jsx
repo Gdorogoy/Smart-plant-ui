@@ -42,7 +42,7 @@ const Settings = () => {
                         Settings
                     </Typography>
 
-                    <Paper sx={{ bgcolor: colors.secondary, borderRadius: 4, boxShadow: '0 8px 32px rgba(0,0,0,0.4)', overflow: 'hidden', border: `1px solid ${colors.foreground}40` }}>
+                    <Paper sx={{ bgcolor: colors.accent, borderRadius: 4, boxShadow: '0 8px 32px rgba(0,0,0,0.4)', overflow: 'hidden', border: `1px solid ${colors.foreground}40` }}>
                         {/* User Info Section */}
                         <Box sx={{ p: 4 }}>
                             <Typography variant="h6" sx={{ color: colors.chart2, mb: 4, fontWeight: 'bold', letterSpacing: 0.5 }}>

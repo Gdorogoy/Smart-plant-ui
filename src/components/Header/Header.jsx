@@ -5,6 +5,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow'
 import colors from '../../assets/Colors'
 import { useState } from 'react';
 import Sidebar from '../SideBar/Sidebar';
+import StartSession from './StartSession';
 
 export default function Header() {
 
@@ -62,7 +63,8 @@ export default function Header() {
       </Box>
 
       {/* Right: Start Session Button */}
-      <Button
+      <StartSession />
+      {/* <Button
         onClick={handleStartSession}
         startIcon={<PlayArrowIcon />}
         sx={{
@@ -82,7 +84,7 @@ export default function Header() {
         }}
       >
         Start Session
-      </Button>
+      </Button> */}
 
       <Sidebar open={openSidebar} setOpen={setOpenSidebar} />
     </Box>

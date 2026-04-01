@@ -1,25 +1,45 @@
 // src/components/StartSession.jsx
-import { Box } from '@mui/material'
+import { Box, Button } from '@mui/material'
+import { useState } from 'react'
+import Session from '../Session/Session'
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import colors from '../../assets/Colors'
+
 
 export default function StartSession() {
+
+  const [open, setOpen] = useState(false)
+
+  const handleStartSession = () => {
+    setOpen(true)
+  }
+
   return (
-    <Box 
-      sx={{ 
-        bgcolor: '#0a5f46',
-        borderRadius: 3,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: 'white',
-        fontSize: '2.5rem',
-        cursor: 'pointer',
-        height: '100%',
-        '&:hover': {
-          bgcolor: '#084a36'
-        }
-      }}
-    >
-      start session
-    </Box>
+    <>
+      <Button
+        onClick={handleStartSession}
+        startIcon={<PlayArrowIcon />}
+        sx={{
+          bgcolor: colors.chart2,
+          color: colors.background,
+          px: 4,
+          py: 1.5,
+          fontSize: '1.1rem',
+          fontWeight: 'bold',
+          borderRadius: 3,
+          textTransform: 'none',
+          '&:hover': {
+            bgcolor: colors.chart3,
+            transform: 'scale(1.02)',
+          },
+          transition: 'all 0.2s'
+        }}
+      >
+        Start Session
+      </Button>
+
+      <Session open={open} onClose={() => setOpen(false)} />
+    </>
+
   )
 }
