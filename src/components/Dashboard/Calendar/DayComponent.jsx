@@ -5,16 +5,16 @@ import { Box, Typography } from '@mui/material'
 const DayComponent = ({ day, index, getDayColor, getTextColor, activeDays, empty }) => {
   if (empty) {
     return <Box sx={{
-      width: 50,
-      height: 50
+      width: '100%',
+      aspectRatio: '1/1'
     }} />
   }
 
   return (
     <Box
       sx={{
-        width: 50,
-        height: 50,
+        width: '100%',
+        aspectRatio: '1/1',
         bgcolor: getDayColor(index),
         borderRadius: 1.5,
         display: 'flex',
@@ -35,7 +35,7 @@ const DayComponent = ({ day, index, getDayColor, getTextColor, activeDays, empty
       {/* Date number */}
       <Typography sx={{
         color: getTextColor(index),
-        fontSize: '1rem',
+        fontSize: { xs: '0.9rem', md: '1rem' },
         fontWeight: 800,
         lineHeight: 1.2,
         my: 0.3

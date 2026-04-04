@@ -72,7 +72,8 @@ export default function MonthlyActivity({ statistics, setLoading, loading }) {
         display: 'flex',
         flexDirection: 'column',
         gap: 2,
-        scale: 1
+        scale: 1,
+        minWidth: 0
       }}
     >
       {/* Header*/}
@@ -95,10 +96,9 @@ export default function MonthlyActivity({ statistics, setLoading, loading }) {
       <Box
         sx={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(7, auto)',
+          gridTemplateColumns: 'repeat(7, 1fr)',
           justifyContent: 'center',
-          gap: 1.5,
-          scale: 0.95,
+          gap: { xs: 0.5, md: 1 },
         }}
       >
 

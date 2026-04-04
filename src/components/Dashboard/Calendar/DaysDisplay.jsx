@@ -6,10 +6,10 @@ export const DaysOfWeeks = ({ weekdays, firstDay, dayOfWeek, offset }) => {
         <Box
             sx={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(7, 50px)',
+                gridTemplateColumns: 'repeat(7, 1fr)',
                 justifyContent: 'center',
-                gap: 1,
-                mb: -1
+                gap: { xs: 0.5, md: 1 },
+                mb: -1,
             }}
         >
             {weekdays.map((day) => (
@@ -17,10 +17,10 @@ export const DaysOfWeeks = ({ weekdays, firstDay, dayOfWeek, offset }) => {
                     key={day}
                     sx={{
                         color: colors.foreground,
-                        fontSize: '1rem',
+                        fontSize: { xs: '0.8rem', md: '1rem' },
                         fontWeight: 600,
                         textAlign: 'center',
-                        mb: -2,
+                        mb: 1,
                     }}
                 >
                     {day}

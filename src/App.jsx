@@ -9,13 +9,14 @@ function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <Box sx={{ display: 'flex' }}>
+    <Box sx={{ display: 'flex', minHeight: '100vh', minWidth: '100vw' }}>
       <Box sx={{
         flexGrow: 1,
         height: '100vh',
         overflow: 'auto',
         display: 'flex',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        minWidth: 0,
       }}>
         <Header></Header>
         <Dashboard></Dashboard>

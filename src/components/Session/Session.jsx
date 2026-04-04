@@ -1,147 +1,133 @@
 import React, { useState, useContext, useEffect } from 'react';
 import {
-    Dialog,
-    DialogTitle,
-    DialogContent,
-    DialogActions,
-    Button,
-    Tabs,
-    Tab,
-    Box,
-    FormControl,
-    InputLabel,
-    Select,
-    MenuItem,
-    TextField,
-    Typography,
+    Dialog, DialogTitle, DialogContent, DialogActions,
+    Button, Tabs, Tab, Box, FormControl, InputLabel, Select, MenuItem, TextField, Typography,
+    Stack,
+    Autocomplete,
 } from '@mui/material';
+
+import { LocalizationProvider, } from '@mui/x-date-pickers/LocalizationProvider';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+
 import { PlantContext } from '../../Context/PlantContext';
+import dayjs from 'dayjs';
 
-function TabPanel(props) {
-    const { children, value, index, ...other } = props;
-
+function TabPanel({ children, value, index, ...other }) {
     return (
-        <div
-            role="tabpanel"
-            hidden={value !== index}
-            id={`session-tabpanel-${index}`}
-            aria-labelledby={`session-tab-${index}`}
-            {...other}
-        >
-            {value === index && (
-                <Box sx={{ p: 3 }}>
-                    {children}
-                </Box>
-            )}
+        <div role="tabpanel" hidden={value !== index} {...other}>
+            {value === index && <Box sx={{ p: 3 }}>{children}</Box>}
         </div>
     );
 }
 
-const Session = ({ open, onClose }) => {
+const Session = ({ open, onClose, isActive, setIsActive, time, setTime }) => {
     const [tabIndex, setTabIndex] = useState(0);
-    const context = useContext(PlantContext);
-    const plants = context?.plants || [];
+    const { plants } = useContext(PlantContext);
 
-    // States for Recording
     const [selectedPlantRecord, setSelectedPlantRecord] = useState('');
-    const [isRecording, setIsRecording] = useState(false);
-    const [recordingTime, setRecordingTime] = useState(0); // in seconds
-
-    // States for Uploading
     const [selectedPlantUpload, setSelectedPlantUpload] = useState('');
-    const [startTime, setStartTime] = useState('');
-    const [endTime, setEndTime] = useState('');
+    const [startTime, setStartTime] = useState(dayjs(new Date()));
+    const [endTime, setEndTime] = useState(dayjs(new Date()));
+    const [sessionId, setSessionId] = useState(null);
 
-    // Timer Effect
+    // restore sessionId on mount
     useEffect(() => {
-        let interval;
-        if (isRecording) {
-            interval = setInterval(() => {
-                setRecordingTime((prev) => prev + 1);
-            }, 1000);
-        } else if (!isRecording && recordingTime !== 0) {
-            clearInterval(interval);
+        const saved = localStorage.getItem('activeSession');
+        if (saved) {
+            const { sessionId: savedId } = JSON.parse(saved);
+            if (savedId) setSessionId(savedId);
         }
-        return () => clearInterval(interval);
-    }, [isRecording, recordingTime]);
+    }, []);
 
-    const handleTabChange = (event, newValue) => {
-        setTabIndex(newValue);
-    };
+    // save elapsed on tab close
+    useEffect(() => {
+        const handleUnload = () => {
+            if (!isActive) return;
+            const saved = localStorage.getItem('activeSession');
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                localStorage.setItem('activeSession', JSON.stringify({
+                    ...parsed,
+                    timer: time
+                }));
+            }
+        };
+        window.addEventListener('beforeunload', handleUnload);
+        return () => window.removeEventListener('beforeunload', handleUnload);
+    }, [isActive, time]);
+
+    // tick
+    useEffect(() => {
+        if (!isActive) return;
+        const interval = setInterval(() => {
+            setTime(prev => prev + 1);
+        }, 1000);
+        return () => clearInterval(interval);
+    }, [isActive]);
 
     const handleStartRecording = () => {
-        if (!selectedPlantRecord) return;
-        setIsRecording(true);
-        setRecordingTime(0); // reset timer on start just in case
-    };
+        setIsActive(true);
+        localStorage.setItem('activeSession', JSON.stringify({
+            sessionId: null, // replace with real sessionId from socket
+            timer: 0
+        }));
+        // TODO: connect socket, emit start, get sessionId back
+        onClose();
+    }
 
     const handleStopRecording = () => {
-        setIsRecording(false);
-        console.log('Stopped recording for plant ID:', selectedPlantRecord, 'Time recorded:', recordingTime);
-        // You could save the session here or add further logic
-    };
+        setIsActive(false);
+        setTime(0);
+        localStorage.removeItem('activeSession');
+        // TODO: socket emit end with { sessionId, duration: time * 1000 }
+        onClose();
+    }
 
     const handleUpload = () => {
         if (!selectedPlantUpload || !startTime || !endTime) return;
-        console.log('Uploading session', {
-            plantId: selectedPlantUpload,
-            startTime,
-            endTime
-        });
-        // Add real API upload logic here
-        if (onClose) onClose();
+        // TODO: API call
+        onClose();
     };
 
     const formatTime = (seconds) => {
-        const m = Math.floor(seconds / 60).toString().padStart(2, '0');
+        const h = Math.floor(seconds / 3600);
+        const m = Math.floor((seconds % 3600) / 60).toString().padStart(2, '0');
         const s = (seconds % 60).toString().padStart(2, '0');
-        return `${m}:${s}`;
+        return h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`;
     };
 
     return (
-        <Dialog open={open} onClose={isRecording ? undefined : onClose} maxWidth="sm" fullWidth>
+        <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
             <DialogTitle sx={{ fontWeight: 'bold', color: '#0a5f46' }}>
                 Session Management
             </DialogTitle>
 
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs
-                    value={tabIndex}
-                    onChange={handleTabChange}
-                    aria-label="session tabs"
-                    variant="fullWidth"
-                    TabIndicatorProps={{ style: { backgroundColor: '#0a5f46' } }}
-                    textColor="inherit"
-                >
-                    <Tab label="Record Session" disabled={isRecording} sx={{ '&.Mui-selected': { color: '#0a5f46' } }} />
-                    <Tab label="Upload Session" disabled={isRecording} sx={{ '&.Mui-selected': { color: '#0a5f46' } }} />
+                <Tabs value={tabIndex} onChange={(e, v) => setTabIndex(v)} variant="fullWidth">
+                    <Tab label="Record Session" disabled={isActive} />
+                    <Tab label="Upload Session" disabled={isActive} />
                 </Tabs>
             </Box>
 
             <DialogContent sx={{ minHeight: '320px' }}>
-                {/* Record Session Tab */}
                 <TabPanel value={tabIndex} index={0}>
-                    <FormControl fullWidth sx={{ mb: 3 }}>
-                        <InputLabel id="record-plant-label">Select Plant</InputLabel>
-                        <Select
-                            labelId="record-plant-label"
-                            value={selectedPlantRecord}
-                            label="Select Plant"
-                            onChange={(e) => setSelectedPlantRecord(e.target.value)}
-                            disabled={isRecording}
-                        >
-                            {plants.map((plant) => (
-                                <MenuItem key={plant.id || plant._id} value={plant.id || plant._id}>
-                                    {plant.name || `Plant ${plant.id || plant._id}`}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+                    <Autocomplete
+                        fullWidth
+                        disablePortal
+                        options={plants}
+                        getOptionLabel={(option) => option.title || `Plant ${option.id}`}
+                        value={plants.find(p => p.id === selectedPlantRecord) || null}
+                        onChange={(_, newValue) => setSelectedPlantRecord(newValue ? newValue.id : '')}
+                        disabled={isActive}
+                        renderInput={(params) => <TextField {...params} label="Select Plant" />}
+                        sx={{ mb: 3 }}
+                    />
 
-                    {isRecording ? (
+                    {isActive ? (
                         <Box sx={{ textAlign: 'center', mt: 4 }}>
                             <Typography variant="h2" sx={{ mb: 1, fontWeight: 'bold', color: '#0a5f46' }}>
-                                {formatTime(recordingTime)}
+                                {formatTime(time)}
                             </Typography>
                             <Typography variant="body1" sx={{ mb: 4, color: '#0a5f46' }}>
                                 Recording in progress...
@@ -167,13 +153,9 @@ const Session = ({ open, onClose }) => {
                                 onClick={handleStartRecording}
                                 disabled={!selectedPlantRecord}
                                 sx={{
-                                    borderRadius: 3,
-                                    bgcolor: '#0a5f46',
-                                    px: 4,
-                                    py: 1.5,
-                                    fontSize: '1.2rem',
+                                    borderRadius: 3, bgcolor: '#0a5f46',
+                                    px: 4, py: 1.5, fontSize: '1.2rem',
                                     '&:hover': { bgcolor: '#084a36' },
-                                    '&.Mui-disabled': { bgcolor: '#e0e0e0' }
                                 }}
                             >
                                 Start Recording
@@ -182,68 +164,44 @@ const Session = ({ open, onClose }) => {
                     )}
                 </TabPanel>
 
-                {/* Upload Session Tab */}
                 <TabPanel value={tabIndex} index={1}>
-                    <FormControl fullWidth sx={{ mb: 3 }}>
-                        <InputLabel id="upload-plant-label">Select Plant</InputLabel>
-                        <Select
-                            labelId="upload-plant-label"
-                            value={selectedPlantUpload}
-                            label="Select Plant"
-                            onChange={(e) => setSelectedPlantUpload(e.target.value)}
-                        >
-                            {plants.map((plant) => (
-                                <MenuItem key={plant.id || plant._id} value={plant.id || plant._id}>
-                                    {plant.name || `Plant ${plant.id || plant._id}`}
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-
-                    <TextField
+                    <Autocomplete
                         fullWidth
-                        label="Start Time"
-                        type="datetime-local"
-                        value={startTime}
-                        onChange={(e) => setStartTime(e.target.value)}
-                        InputLabel={{ shrink: true }}
+                        disablePortal
+                        options={plants}
+                        getOptionKey={(option) => option.id}
+                        getOptionLabel={(option) => option.title || `Plant ${option.id}`}
+                        value={plants.find(p => p.id === selectedPlantUpload) || null}
+                        onChange={(_, newValue) => setSelectedPlantUpload(newValue ? newValue.id : '')}
+                        renderInput={(params) => <TextField {...params} label="Select Plant" />}
                         sx={{ mb: 3 }}
                     />
 
-                    <TextField
-                        fullWidth
-                        label="End Time"
-                        type="datetime-local"
-                        value={endTime}
-                        onChange={(e) => setEndTime(e.target.value)}
-                        InputLabelProps={{ shrink: true }}
-                        sx={{ mb: 3 }}
-                    />
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <Stack gap={2} mb={2}  >
+                            <DateTimePicker
+                                label="Start Time"
+                                value={startTime}
+                                onChange={(newValue) => setStartTime(newValue)}
+                            />
+                            <DateTimePicker
+                                label="End Time"
+                                value={endTime}
+                                onChange={(newValue) => setEndTime(newValue)}
+                            />
+                        </Stack>
+                    </LocalizationProvider>
 
-                    <Box sx={{ textAlign: 'center', mt: 2 }}>
-                        <Button
-                            variant="contained"
-                            size="large"
-                            onClick={handleUpload}
-                            disabled={!selectedPlantUpload || !startTime || !endTime}
-                            fullWidth
-                            sx={{
-                                borderRadius: 2,
-                                bgcolor: '#0a5f46',
-                                py: 1.5,
-                                fontSize: '1.1rem',
-                                '&:hover': { bgcolor: '#084a36' },
-                                '&.Mui-disabled': { bgcolor: '#e0e0e0' }
-                            }}
-                        >
-                            Upload Session
-                        </Button>
-                    </Box>
+                    <Button variant="contained" size="large" onClick={handleUpload}
+                        disabled={!selectedPlantUpload || !startTime || !endTime} fullWidth
+                        sx={{ borderRadius: 2, bgcolor: '#0a5f46', py: 1.5, fontSize: '1.1rem' }}>
+                        Upload Session
+                    </Button>
                 </TabPanel>
             </DialogContent>
 
             <DialogActions sx={{ px: 3, pb: 2 }}>
-                <Button onClick={onClose} disabled={isRecording} sx={{ color: '#0a5f46', fontWeight: 'bold' }}>
+                <Button onClick={onClose} disabled={isActive} sx={{ color: '#0a5f46', fontWeight: 'bold' }}>
                     Cancel
                 </Button>
             </DialogActions>

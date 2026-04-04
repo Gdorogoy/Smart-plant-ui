@@ -36,13 +36,12 @@ export default function Dashboard() {
         gridTemplateColumns: '25% 50% 25%',
         gap: 2,
         minHeight: 0,
+        minWidth: 0,
         pr: 4
       }}>
         <Plant plants={plants} setLoading={setLoading} loading={loading} userProfile={userProfile} lastActivePlantId={userProfile?.lastActivePlantId} />
         <QuickStats statistics={statistics} setLoading={setLoading} loading={loading} userProfile={userProfile} />
         <MonthlyActivity statistics={statistics} setLoading={setLoading} loading={loading} />
-
-
 
       </Box>
 

@@ -87,49 +87,51 @@ export default function WeeklyStats({ statistics, setLoading, loading }) {
         Weekly Progress
       </Box>
 
-      <Box sx={{ flex: 1, minHeight: 0 }}>
-        {weeklyData && <LineChart
-          series={weeklyData?.map((item, index) => (
-            {
-              data: map[item.plant],
-              label: item.plant,
-              color: colors[`chart${(index % 5) + 1}`],
-              showMark: true,
-              area: true,
-              connectNulls: true,
-              valueFormatter: formatTooltip,
-              id: item.plant
-
-            }
-          ))}
-          xAxis={[{
-            scaleType: 'point',
-            data: xLabels,
-            tickLabelStyle: {
-              fill: colors.foreground,
-              fontSize: 12,
-            }
-          }]}
-          yAxis={[{
-            min: 0, // Start at 0
-            max: findMaxHour(), //Max in minutes so the grapth would display normally
-            tickLabelStyle: {
-              fill: colors.foreground,
-              fontSize: 12,
-            },
-            valueFormatter: formatYAxis,
-            tickNumber: 4,
-          }]}
-          tooltip={{ trigger: 'axis' }}
-          sx={{
-            bgcolor: colors.muted,
-            borderRadius: 5,
-            '& .MuiChartsAxis-line': { stroke: colors.accent },
-            '& .MuiChartsAxis-tick': { stroke: colors.accent },
-            '& .MuiChartsLegend-series text': { fill: colors.foreground },
-          }}
-          margin={{ top: 10, right: 20, bottom: 30, left: 50 }}
-        />}
+      <Box sx={{ flex: 1, minHeight: 0, minWidth: 0, position: 'relative' }}>
+        <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
+          {weeklyData && <LineChart
+            series={weeklyData?.map((item, index) => (
+              {
+                data: map[item.plant],
+                label: item.plant,
+                color: colors[`chart${(index % 5) + 1}`],
+                showMark: true,
+                area: true,
+                connectNulls: true,
+                valueFormatter: formatTooltip,
+                id: item.plant
+  
+              }
+            ))}
+            xAxis={[{
+              scaleType: 'point',
+              data: xLabels,
+              tickLabelStyle: {
+                fill: colors.foreground,
+                fontSize: 12,
+              }
+            }]}
+            yAxis={[{
+              min: 0, // Start at 0
+              max: findMaxHour(), //Max in minutes so the grapth would display normally
+              tickLabelStyle: {
+                fill: colors.foreground,
+                fontSize: 12,
+              },
+              valueFormatter: formatYAxis,
+              tickNumber: 4,
+            }]}
+            tooltip={{ trigger: 'axis' }}
+            sx={{
+              bgcolor: colors.muted,
+              borderRadius: 5,
+              '& .MuiChartsAxis-line': { stroke: colors.accent },
+              '& .MuiChartsAxis-tick': { stroke: colors.accent },
+              '& .MuiChartsLegend-series text': { fill: colors.foreground },
+            }}
+            margin={{ top: 10, right: 20, bottom: 30, left: 50 }}
+          />}
+        </Box>
       </Box>
     </Box>
   )

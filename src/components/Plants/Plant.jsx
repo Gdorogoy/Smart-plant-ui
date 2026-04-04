@@ -44,7 +44,8 @@ const Plant = ({ plants, setLoading, loading, userProfile, lastActivePlantId, si
                 boxShadow: '0 8px 24px rgba(0,0,0,0.15)',
                 transition: 'transform 0.2s',
                 display: 'flex',
-                flexDirection: 'column'
+                flexDirection: 'column',
+                minWidth: 0
             }}
         >
             <Box sx={{

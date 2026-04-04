@@ -85,7 +85,8 @@ export default function QuickStats({ statistics, loading, setLoading, userProfil
       display: 'flex',
       flexDirection: 'column',
       gap: 2,
-      height: '100%'
+      height: '100%',
+      minWidth: 0
     }}>
       {/* Today's Progress */}
 
@@ -155,8 +156,11 @@ export default function QuickStats({ statistics, loading, setLoading, userProfil
           flex: 1,
           width: '100%',
           minHeight: 0,
-          mt: 1
+          minWidth: 0,
+          mt: 1,
+          position: 'relative'
         }}>
+          <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0 }}>
           {
             (weeklyData && weekDates.length > 0) && <LineChart
               xAxis={
@@ -200,6 +204,7 @@ export default function QuickStats({ statistics, loading, setLoading, userProfil
                 '& .MuiChartsAxis-tickLabel': { fill: colors.foreground },
               }}
             />}
+          </Box>
         </Box>
       </Box>
 
