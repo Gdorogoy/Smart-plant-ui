@@ -27,7 +27,6 @@ const Plant = ({ plants, setLoading, loading, userProfile, lastActivePlantId, si
 
     }, [plants, userProfile, lastActivePlantId]);
 
-    console.log(plant)
     const proggress = plant ? (plant.currentXp / plant.nextLevelXp) * 100 : 1
 
     if (!plant) return null;

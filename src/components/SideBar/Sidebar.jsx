@@ -127,6 +127,7 @@ const Sidebar = ({ open, setOpen }) => {
                     <ListItemButton
                         onClick={() => {
                             logout();
+                            navigate('/login');
                             setOpen(false);
                         }}
                         sx={{

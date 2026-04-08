@@ -5,23 +5,24 @@ import { io } from 'socket.io-client';
 
 
 const useSocket = () => {
-  const [socket, setSocket] = useState(null);
-
-  useEffect(() => {
-
-  }, []);
 
   const connect = () => {
-    const s = io('http://localhost:3002'); // { query: { token } } to pass the token 
-    setSocket(s);
+    const s = io('http://localhost:3000'); // { query: { token } } to pass the token 
+    return s;
   }
 
-  const start = (data) => {
-    socket.emit('start', JSON.stringify(data));
-    socket.on('sessionStarted', (response) => {
+  const start = (data, s) => {
+    s.emit('start', data);
+  }
+
+  const onSessionStarted = (s, callback) => {
+    s.on('sessionStarted', (response) => {
       //TODO:
-      const { sessionId } = JSON.parse(response);
-      localStorage.setItem('sessionId', sessionId);
+      console.log("=======")
+      console.log(response);
+      console.log("=======")
+
+      callback(response);
 
       //2. start timer 
       //3. if user closed tab stop timer and save the time 
@@ -29,18 +30,23 @@ const useSocket = () => {
     });
   }
 
-  const end = (sessionId) => {
-    socket.emit('end', JSON.stringify({ sessionId: sessionId }));
-    socket.on('sessionEnded', () => {
+  const end = (sessionId, s) => {
+    s.emit('end', sessionId);
+
+  }
+
+  const onSessionEnded = (s, callback) => {
+
+    s.on('sessionEnded', (response) => {
       //TODO
       //1. stop timer 
       //2. remove session id & timer from local storage
       //3. refetch the page for updating stats
+      callback(response);
     });
-
   }
 
-  return { socket, connect, start, end };
+  return { connect, start, end, onSessionStarted, onSessionEnded };
 
 }
 

@@ -4,7 +4,6 @@ import colors from '../../assets/Colors'
 import { LineChart } from '@mui/x-charts/LineChart'
 import { useState } from 'react'
 import { useEffect } from 'react';
-import { PlantContext } from '../../Context/PlantContext'
 import { useContext } from 'react'
 
 export default function WeeklyStats({ statistics, setLoading, loading }) {
@@ -100,7 +99,6 @@ export default function WeeklyStats({ statistics, setLoading, loading }) {
                 connectNulls: true,
                 valueFormatter: formatTooltip,
                 id: item.plant
-  
               }
             ))}
             xAxis={[{

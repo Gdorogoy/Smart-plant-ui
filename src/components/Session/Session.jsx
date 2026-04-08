@@ -12,6 +12,8 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 
 import { PlantContext } from '../../Context/PlantContext';
 import dayjs from 'dayjs';
+import useSocket from './useSocket';
+import { useRef } from 'react';
 
 function TabPanel({ children, value, index, ...other }) {
     return (
@@ -23,13 +25,23 @@ function TabPanel({ children, value, index, ...other }) {
 
 const Session = ({ open, onClose, isActive, setIsActive, time, setTime }) => {
     const [tabIndex, setTabIndex] = useState(0);
-    const { plants } = useContext(PlantContext);
+    const { plants, userProfile } = useContext(PlantContext);
 
     const [selectedPlantRecord, setSelectedPlantRecord] = useState('');
     const [selectedPlantUpload, setSelectedPlantUpload] = useState('');
     const [startTime, setStartTime] = useState(dayjs(new Date()));
     const [endTime, setEndTime] = useState(dayjs(new Date()));
     const [sessionId, setSessionId] = useState(null);
+
+    const s = useSocket();
+    const socket = useRef(null);
+
+
+    /*
+       TODO: fix days display in quick look,fix wrong time showing in calendar, fix time convertion on graphs
+    
+
+    */
 
     // restore sessionId on mount
     useEffect(() => {
@@ -66,24 +78,55 @@ const Session = ({ open, onClose, isActive, setIsActive, time, setTime }) => {
         return () => clearInterval(interval);
     }, [isActive]);
 
+
+    //Start recording session
+    //Uses custom hook , cathces the respomnse via callback
+    //Saves the session and session time
     const handleStartRecording = () => {
         setIsActive(true);
-        localStorage.setItem('activeSession', JSON.stringify({
-            sessionId: null, // replace with real sessionId from socket
-            timer: 0
-        }));
-        // TODO: connect socket, emit start, get sessionId back
+
+        if (!socket.current) {
+            socket.current = s.connect();
+        }
+
+
+        s.start({ plantId: selectedPlantRecord, userId: userProfile.id }, socket.current);
+
+        s.onSessionStarted(socket.current, ({ id }) => {
+            setSessionId(id);
+            localStorage.setItem('activeSession', JSON.stringify({
+                sessionId: id,
+                timer: 0
+            }));
+        });
+
         onClose();
     }
 
+    //Stops the recording
+    //Uses custom hook to stop
+    //TODO: add dialog to show the user the duration and plant affected gained xp etc.
     const handleStopRecording = () => {
+
+        if (!socket.current) {
+            socket.current = s.connect();
+        }
+
+        s.end({ sessionId: sessionId }, socket.current);
+
+        const res = s.onSessionEnded(socket.current, (res) => {
+            console.log(res);
+        });
+
+
         setIsActive(false);
         setTime(0);
         localStorage.removeItem('activeSession');
-        // TODO: socket emit end with { sessionId, duration: time * 1000 }
         onClose();
     }
 
+
+    //TODO: implement
     const handleUpload = () => {
         if (!selectedPlantUpload || !startTime || !endTime) return;
         // TODO: API call

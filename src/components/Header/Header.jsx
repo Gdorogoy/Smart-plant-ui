@@ -15,10 +15,7 @@ export default function Header() {
   const todayProgress = 45 // minutes
   const todayGoal = 60
 
-  const handleStartSession = () => {
-    console.log('Start session clicked')
-    // Navigate to session page or open modal
-  }
+
 
   return (
     <Box sx={{
@@ -64,28 +61,6 @@ export default function Header() {
 
       {/* Right: Start Session Button */}
       <StartSession />
-      {/* <Button
-        onClick={handleStartSession}
-        startIcon={<PlayArrowIcon />}
-        sx={{
-          bgcolor: colors.chart2,
-          color: colors.background,
-          px: 4,
-          py: 1.5,
-          fontSize: '1.1rem',
-          fontWeight: 'bold',
-          borderRadius: 3,
-          textTransform: 'none',
-          '&:hover': {
-            bgcolor: colors.chart3,
-            transform: 'scale(1.02)',
-          },
-          transition: 'all 0.2s'
-        }}
-      >
-        Start Session
-      </Button> */}
-
       <Sidebar open={openSidebar} setOpen={setOpenSidebar} />
     </Box>
   )

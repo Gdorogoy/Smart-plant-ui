@@ -7,6 +7,7 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Auth from './components/Auth/Auth.jsx'
 import Plants from './components/Plants/Plants.jsx'
 import Settings from './components/Settings/Settings.jsx'
+import Statistics from './components/Statistics/Statistics.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -16,7 +17,7 @@ createRoot(document.getElementById('root')).render(
           <Route path='/home' element={<App />} />
           <Route path='/login' element={<Auth />} />
           <Route path='/plants' element={<Plants />} />
-          <Route path='/stats' element={<App />} />
+          <Route path='/stats' element={<Statistics />} />
           <Route path='/settings' element={<Settings />} />
         </Routes>
 
